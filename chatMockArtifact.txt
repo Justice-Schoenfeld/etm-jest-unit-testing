@@ -1,0 +1,76 @@
+If you cannot include `require` statements in the child implementation file, you'll need to ensure that the parent class is accessible when running your tests. One approach to achieve this is by using Jest's `moduleNameMapper` configuration option to mock the parent class.
+
+Here's how you can structure your files and tests:
+
+Suppose you have a parent class `ParentClass` and a child class `ChildClass` which extends `ParentClass`. Your directory structure might look like this:
+
+```
+src/
+  |-- ParentClass.js
+  |-- ChildClass.js
+tests/
+  |-- ChildClass.test.js
+```
+
+Here's a simplified example of how your files might look:
+
+**ParentClass.js:**
+```javascript
+class ParentClass {
+  constructor() {
+    this.parentProperty = 'Parent Property';
+  }
+
+  getParentProperty() {
+    return this.parentProperty;
+  }
+}
+
+module.exports = ParentClass;
+```
+
+**ChildClass.js:**
+```javascript
+class ChildClass extends ParentClass {
+  constructor() {
+    super();
+    this.childProperty = 'Child Property';
+  }
+
+  getChildProperty() {
+    return this.childProperty;
+  }
+}
+
+module.exports = ChildClass;
+```
+
+**ChildClass.test.js:**
+```javascript
+const ChildClass = require('../src/ChildClass');
+
+// Mock the ParentClass
+jest.mock('../src/ParentClass', () => {
+  return class ParentClassMock {
+    constructor() {
+      this.parentProperty = 'Mocked Parent Property';
+    }
+
+    getParentProperty() {
+      return this.parentProperty;
+    }
+  };
+});
+
+test('ChildClass has parent property', () => {
+  const childInstance = new ChildClass();
+  expect(childInstance.getParentProperty()).toBe('Mocked Parent Property');
+});
+
+test('ChildClass has child property', () => {
+  const childInstance = new ChildClass();
+  expect(childInstance.getChildProperty()).toBe('Child Property');
+});
+```
+
+In this setup, we're using `jest.mock` to mock the `ParentClass`. Inside the mock, we define a class with the same structure and methods as the `ParentClass`, but with mocked behavior. This allows us to test the `ChildClass` without requiring the `ParentClass` directly in the child implementation file.

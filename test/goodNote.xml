@@ -1,0 +1,18 @@
+<note>
+    <to>You</to>
+    <from>Me</from>
+    <title>Reminder</title>
+    <body>Don't forget me this weekend!</body>
+    <steps>
+        <step>
+            <number>1</number>
+            <description>This is step 1, please set up whatever you need to.</description>
+            <outcome>You will be set up at the end of this step.</outcome>
+        </step>
+        <step>
+            <number>2</number>
+            <description>This is step 2, do the next action.</description>
+            <outcome>You completed step 2.</outcome>
+        </step>
+    </steps>
+</note>
