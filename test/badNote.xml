@@ -1,6 +1,8 @@
 <note>
-    <to>You</to>
-    <from>Me</from>
+    <to_x>You</to_x>
+    <from_x>Me</from_x>
+    <title_x>Reminder</title_x>
+    <body_x>Don't forget me this weekend!</body_x>
     <steps>
         <step>
             <number>1</number>

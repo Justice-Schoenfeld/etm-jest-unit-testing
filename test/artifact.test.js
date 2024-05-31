@@ -1,10 +1,8 @@
 const getXML = require('./testUtility')
 const Artifact = require('../src/artifact');
 const ArtifactUtility = require('../src/artifactUtility')
-// const utils = require('../src/artifactUtility')
-// const {extractIfNull, isUndefinedInXml} = utils
 
-const { beforeEach, afterEach } = require('node:test');
+// const { beforeEach, afterEach } = require('node:test');
 
 
 describe('Artifact class', () => {
@@ -34,7 +32,7 @@ describe('Artifact class', () => {
             expect(badObject.title).toBe(undefined);
         })
 
-        test('attempting to set raises error', () => {
+        test('attempting to set title when undefined raises error', () => {
             const t = () => {
                 badObject.title = 'blah';
             }
