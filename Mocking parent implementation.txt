@@ -1,0 +1,59 @@
+If you want to mock the parent class without explicitly requiring it in the child class, you can still achieve this by leveraging Jest's mocking capabilities. Jest provides a way to mock entire modules, so you can mock the parent class module even if it's not directly imported in the child class.
+
+Here's how you can do it:
+
+```javascript
+// animal.js
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    return 'Animal sound';
+  }
+}
+
+// dog.js
+class Dog extends Animal {
+  bark() {
+    return 'Woof';
+  }
+}
+
+module.exports = Dog;
+```
+
+And the test file:
+
+```javascript
+// dog.test.js
+jest.mock('./animal', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      speak: jest.fn(() => 'Mocked animal sound'),
+    };
+  });
+});
+
+const Dog = require('./dog');
+
+describe('Dog class', () => {
+  test('bark method should return "Woof"', () => {
+    const dog = new Dog('Buddy');
+    expect(dog.bark()).toBe('Woof');
+  });
+
+  test('speak method should return "Mocked animal sound"', () => {
+    const dog = new Dog('Buddy');
+    expect(dog.speak()).toBe('Mocked animal sound');
+  });
+
+  test('name property should be set correctly', () => {
+    const dog = new Dog('Buddy');
+    expect(dog.name).toBe('Buddy');
+  });
+});
+```
+
+In this setup, we're mocking the `animal` module directly in the test file. When `Dog` is required, the `animal` module will be automatically mocked as per our mock implementation. This allows you to test the `Dog` class without having to require the `Animal` class directly within the `Dog` module.

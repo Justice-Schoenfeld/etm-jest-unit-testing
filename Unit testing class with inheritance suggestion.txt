@@ -1,0 +1,70 @@
+If you want to avoid using `require` statements entirely in the child file, you can utilize dynamic imports in your child file and leverage dependency injection for testing. Here's how you can do it:
+
+```javascript
+// parent.js
+export default class Parent {
+  constructor() {
+    this.value = 'parent';
+  }
+
+  getValue() {
+    return this.value;
+  }
+}
+```
+
+```javascript
+// child.js
+export default class Child {
+  constructor(parentClass = import('./parent').then(module => module.default)) {
+    parentClass.then(Parent => {
+      this.parent = new Parent();
+    });
+    this.value = 'child';
+  }
+
+  getValue() {
+    return this.value;
+  }
+
+  getParentValue() {
+    return this.parent ? this.parent.getValue() : 'Parent not yet initialized';
+  }
+}
+```
+
+In this `Child` class, the constructor allows passing the `Parent` class dynamically using dependency injection. If no `Parent` class is provided, it asynchronously imports it using `import('./parent')`.
+
+Now, in your Jest test file, you can mock the `Parent` class as before, but without directly importing the child file:
+
+```javascript
+import Child from './child';
+
+jest.mock('./parent', () => {
+  return class MockedParent {
+    getValue() {
+      return 'mocked parent value';
+    }
+  };
+});
+
+describe('Child class', () => {
+  it('should return the value overridden in Child class', () => {
+    const child = new Child();
+    expect(child.getValue()).toBe('child');
+  });
+
+  it('should not return the value from the parent class', () => {
+    const child = new Child();
+    expect(child.getParentValue()).toBe('mocked parent value');
+  });
+});
+```
+
+In this test file:
+
+- We import the `Child` class, which dynamically imports the `Parent` class.
+- We mock the `Parent` class using `jest.mock`.
+- We test the behavior of the `Child` class as before.
+
+This approach keeps the child file free from direct `require` statements while still allowing you to test the child class with a mocked parent class.
